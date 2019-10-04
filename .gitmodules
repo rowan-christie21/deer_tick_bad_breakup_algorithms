@@ -1,3 +1,6 @@
 [submodule "christie_bahlai_bad_breakup"]
 	path = christie_bahlai_bad_breakup
 	url = https://github.com/SMCCoder/bad_breakup_2.git
+[submodule "bad_breakup_2"]
+	path = bad_breakup_2
+	url = https://github.com/SMCCoder/bad_breakup_2.git
