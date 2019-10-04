@@ -1,0 +1,6 @@
+Manifest file for archive_knb-lter-hfr.299.2_15687618759063188.zip created on Tue Sep 17 17:11:15 MDT 2019
+hf299-01-survey.csv (494767 bytes)
+hf299-02-schedule.csv (362 bytes)
+knb-lter-hfr.299.2.xml (19221 bytes)
+knb-lter-hfr.299.2.txt (4297 bytes)
+knb-lter-hfr.299.2.report.xml (41948 bytes)

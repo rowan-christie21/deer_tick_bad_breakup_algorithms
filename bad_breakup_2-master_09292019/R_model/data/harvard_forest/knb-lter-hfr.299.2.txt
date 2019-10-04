@@ -1,0 +1,223 @@
+Dataset title:  Incidence of Ticks and Tick Bites at Harvard Forest since 2006
+
+Dataset ID:  HF299
+Dataset Creator
+
+	Name:		Aaron Ellison
+
+
+Dataset Abstract
+
+
+
+Dataset Keywords
+
+	disease
+	humans
+	insects
+	populations
+	Harvard Forest
+	HFR
+	LTER
+	USA
+
+
+Intellectual Rights
+
+
+
+Distribution
+
+	Online distribution:  http://harvardforest.fas.harvard.edu:8080/exist/xquery/data.xq?id=hf299
+
+
+Geographic Coverage
+
+
+	Bounding Coordinates
+
+		Geographic description:	Harvard Forest
+		West bounding coordinate:	-72.19
+		East bounding coordinate:	-72.19
+		North bounding coordinate:	+42.53
+		South bounding coordinate:	+42.53
+	
+
+
+
+Temporal Coverage
+
+	Start Date:  2006
+	End Date:  2017
+
+
+Dataset Contact
+
+
+
+Methods
+
+
+
+	Method Step 
+
+		Description 
+
+
+
+Data Table
+
+	Entity Name:  hf299-01-survey.csv
+	Entity Description:  tick survey data
+	Object Name:  hf299-01-survey.csv
+
+
+
+Data Format
+
+	Number of Header Lines:  1
+	Attribute Orientation:  column
+	Field Delimiter:  ,
+	Number of Records:  10313
+
+
+
+Attributes
+
+	Attribute Name:  year
+	Attribute Label:  
+	Attribute Definition:  year of participation
+	Storage Type:  
+	Measurement Scale: 
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  week
+	Attribute Label:  
+	Attribute Definition:  week of data collection
+	Storage Type:  
+	Measurement Scale: 
+		week of data collection
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  student.id
+	Attribute Label:  
+	Attribute Definition:  random number assigned to student
+	Storage Type:  
+	Measurement Scale: 
+		random number assigned to student
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  student.entry
+	Attribute Label:  
+	Attribute Definition:  location of student as entered by student
+	Storage Type:  
+	Measurement Scale: 
+		location of student as entered by student
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  location.name
+	Attribute Label:  
+	Attribute Definition:  standardized location name
+	Storage Type:  
+	Measurement Scale: 
+		standardized location name
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  field.lab
+	Attribute Label:  
+	Attribute Definition:  whether in the field or the lab
+	Storage Type:  
+	Measurement Scale: 
+		F= field
+		L= lab
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  hours
+	Attribute Label:  
+	Attribute Definition:  number of work hours
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Precision:  0.1
+		Number Type:  real
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  wood.found
+	Attribute Label:  
+	Attribute Definition:  number of wood ticks (Dermacentor variabilis) found on
+						self
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Precision:  1
+		Number Type:  whole
+	Missing Value Code: NA  (missing values)
+
+
+	Attribute Name:  deer.found
+	Attribute Label:  
+	Attribute Definition:  number of deer ticks (Ixodes scapularis) found on
+						self
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Precision:  1
+		Number Type:  whole
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  wood.bite
+	Attribute Label:  
+	Attribute Definition:  number of wood ticks (Dermacentor variabilis) attached/bite on
+						self
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Precision:  1
+		Number Type:  whole
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  deer.bite
+	Attribute Label:  
+	Attribute Definition:  number of deer ticks (Ixodes scapularis) attached/bite on
+						self
+	Storage Type:  
+	Measurement Scale: 
+		Units:  number
+		Precision:  1
+		Number Type:  whole
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  year
+	Attribute Label:  
+	Attribute Definition:  year of participation
+	Storage Type:  
+	Measurement Scale: 
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  start.date
+	Attribute Label:  
+	Attribute Definition:  start date
+	Storage Type:  
+	Measurement Scale: 
+	Missing Value Code: NA  (missing value)
+
+
+	Attribute Name:  end.date
+	Attribute Label:  
+	Attribute Definition:  end date
+	Storage Type:  
+	Measurement Scale: 
+	Missing Value Code: NA  (missing value)
+
+
