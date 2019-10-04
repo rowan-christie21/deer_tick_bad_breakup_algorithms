@@ -42,7 +42,7 @@ relative.range.max.value = c()
 for (i in counties) {
   tryCatch({
     #location: i
-    county <- tick_data[tick_adults_data$County == i,]
+    county <- tick_adults_data[tick_adults_data$County == i,]
     #get only year and ticks found column
     tick_adults <- county[,c("Year", "Tick.Population.Density")]
     #omit nas
