@@ -31,6 +31,8 @@ counties <- as.character(counties)
 
 #set up vectors to collect results of stability time, absolute range, relative range 
 #run on adult deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
 counties.with.10.years.data = c()
 stability.time = c()
 absolute.range.min.value = c()
@@ -39,6 +41,7 @@ relative.range.min.value = c()
 relative.range.max.value = c()
 proportion.significant = c()
 proportion.wrong = c()
+num.phases = c()
 
 sink(paste("ny_county_adult_tick_data_results",Sys.Date()))
 for (i in counties) {
@@ -56,6 +59,10 @@ for (i in counties) {
       #i returns county name
       print(i)
       counties.with.10.years.data <- c(counties.with.10.years.data, i)
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_adults$Year[1])
+      end.year <- c(end.year, tick_adults$Year[nrow(tick_adults)])
       
       #iterates through our targetted windows and returns summary statistics
       print("Multiple Breakups")
@@ -93,6 +100,14 @@ for (i in counties) {
       print(psw)
       proportion.wrong <- c(proportion.wrong, psw)
       
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_adults)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
       #print pyramid plot to png
       #png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Adult deer tick density in ", i, ", NY ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
       #print(pyramid_plot(tick_adults, title=paste("Adult deer tick density in ", i, ", NY", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
@@ -104,7 +119,7 @@ for (i in counties) {
 }
 sink()
 
-county_adult_tick_data_results <- data.frame(counties.with.10.years.data, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong)
+county_adult_tick_data_results <- data.frame(counties.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
 write.csv(county_adult_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/ny_county_adult_tick_data_results_",Sys.Date(),".csv",sep = ""))
 
 #-------------------------------------------------#
@@ -120,6 +135,8 @@ counties <- as.character(counties)
 
 #set up vectors to collect results of stability time, absolute range, relative range 
 #run on adult deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
 counties.with.10.years.data = c()
 stability.time = c()
 absolute.range.min.value = c()
@@ -128,6 +145,7 @@ relative.range.min.value = c()
 relative.range.max.value = c()
 proportion.significant = c()
 proportion.wrong = c()
+num.phases = c()
 
 sink(paste("ny_county_adult_tick_pathogen_presence_data_results",Sys.Date()))
 for (i in counties) {
@@ -145,6 +163,10 @@ for (i in counties) {
       #i returns county name
       print(i)
       counties.with.10.years.data <- c(counties.with.10.years.data, i)
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_pathogen$Year[1])
+      end.year <- c(end.year, tick_pathogen$Year[nrow(tick_pathogen)])
       
       #iterates through our targetted windows and returns summary statistics
       print("Multiple Breakups")
@@ -182,6 +204,14 @@ for (i in counties) {
       print(psw)
       proportion.wrong <- c(proportion.wrong, psw)
       
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_pathogen)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
       #print pyramid plot to png
       #png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/B Burgdorferi % in deer tick adults in ", i, ", NY ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
       #print(pyramid_plot(tick_pathogen, title=paste("B. Burgdorferi % in deer tick adults in ", i, ", NY", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
@@ -193,7 +223,7 @@ for (i in counties) {
 }
 sink()
 
-county_adult_tick_data_results <- data.frame(counties.with.10.years.data, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong)
+county_adult_tick_data_results <- data.frame(counties.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
 write.csv(county_adult_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/ny_county_adult_tick_pathogen_presence_data_results_",Sys.Date(),".csv",sep = ""))
 
 #-------------------------------------------------#
@@ -209,6 +239,8 @@ counties <- as.character(counties)
 
 #set up vectors to collect results of stability time, absolute range, relative range 
 #run on nymph deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
 counties.with.10.years.data = c()
 stability.time = c()
 absolute.range.min.value = c()
@@ -217,6 +249,7 @@ relative.range.min.value = c()
 relative.range.max.value = c()
 proportion.significant = c()
 proportion.wrong = c()
+num.phases = c()
 
 sink(paste("ny_county_nymph_tick_data_results",Sys.Date()))
 for (i in counties) {
@@ -234,6 +267,10 @@ for (i in counties) {
       #i returns county name
       print(i)
       counties.with.10.years.data <- c(counties.with.10.years.data, i)
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_nymphs$Year[1])
+      end.year <- c(end.year, tick_nymphs$Year[nrow(tick_nymphs)])
       
       #iterates through our targetted windows and returns summary statistics
       print("Multiple Breakups")
@@ -271,6 +308,14 @@ for (i in counties) {
       print(psw)
       proportion.wrong <- c(proportion.wrong, psw)
       
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_nymphs)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
       #print pyramid plot to png
       #png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/nymph deer tick density in ", i, ", NY ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
       #print(pyramid_plot(tick_nymphs, title=paste("Nymph deer tick density in ", i, ", NY", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
@@ -282,7 +327,7 @@ for (i in counties) {
 }
 sink()
 
-county_nymph_tick_data_results <- data.frame(counties.with.10.years.data, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong)
+county_nymph_tick_data_results <- data.frame(counties.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
 write.csv(county_nymph_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/ny_county_nymph_tick_data_results_",Sys.Date(),".csv",sep = ""))
 
 #-------------------------------------------------#
@@ -298,6 +343,8 @@ counties <- as.character(counties)
 
 #set up vectors to collect results of stability time, absolute range, relative range 
 #run on nymph deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
 counties.with.10.years.data = c()
 stability.time = c()
 absolute.range.min.value = c()
@@ -306,6 +353,7 @@ relative.range.min.value = c()
 relative.range.max.value = c()
 proportion.significant = c()
 proportion.wrong = c()
+num.phases = c()
 
 sink(paste("ny_county_nymph_tick_pathogen_presence_data_results",Sys.Date()))
 for (i in counties) {
@@ -323,6 +371,10 @@ for (i in counties) {
       #i returns county name
       print(i)
       counties.with.10.years.data <- c(counties.with.10.years.data, i)
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_pathogen$Year[1])
+      end.year <- c(end.year, tick_pathogen$Year[nrow(tick_pathogen)])
       
       #iterates through our targetted windows and returns summary statistics
       print("Multiple Breakups")
@@ -360,6 +412,14 @@ for (i in counties) {
       print(psw)
       proportion.wrong <- c(proportion.wrong, psw)
       
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_pathogen)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
       #print pyramid plot to png
       #png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/B Burgdorferi % in deer tick nymphs in ", i, ", NY ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
       #print(pyramid_plot(tick_pathogen, title=paste("B. Burgdorferi % in deer tick nymphs in ", i, ", NY", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
@@ -371,7 +431,7 @@ for (i in counties) {
 }
 sink()
 
-county_nymph_tick_data_results <- data.frame(counties.with.10.years.data, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong)
+county_nymph_tick_data_results <- data.frame(counties.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
 write.csv(county_nymph_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/ny_county_nymph_tick_pathogen_presence_data_results_",Sys.Date(),".csv",sep = ""))
 
 

@@ -1,0 +1,629 @@
+#Oct 15th 2019
+#creating pyramid plots for deer tick data in Cary Forest and recording results of multiple breakup, 
+#absolute range, relative range, stabilitiy time, proportion significant, proportion significantly wrong functions
+#
+#dataset source: Cary Institute of Ecosystem Studies
+# study link:
+#   https://datadryad.org/stash/dataset/doi:10.5061/dryad.d1c8046
+# dataset citation:
+#   Ostfeld RS, Levi T, Keesing F, Oggenfuss K, Canham CD (2018) Data from: Tick-borne disease risk in a forest food web. Dryad Digital Repository.  https://doi.org/10.5061/dryad.d1c8046
+
+
+#--------------------------------------------------------------------------#
+
+#call needed libaries
+library("ggplot2")
+
+#call to bad breakup algorithm developed by Dr. Christie Bahlai of Kent State
+source("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/bad_breakup_2/R_model/bad_breakup_script.R")
+
+#call to regime shift detector developed by Dr. Christie Bahlai of Kent State and Dr. Elise Zipkin
+source("D:/Ixodes_scapularis_research_2019/regime_shift_tick_algorithms/tick_regime_09192019/monarch_regime-master_07162019/regime_shift_detector.R")
+
+#-------------------------------------------------#
+#Tick adult density
+
+#read in tick adult data
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#create vector of grids in NY state in the dataset
+grids <- unique(tick_data$Grid)
+grids <- na.omit(grids)
+grids <- as.character(grids)
+
+#set up vectors to collect results of stability time, absolute range, relative range 
+#run on adult deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
+grids.with.10.years.data = c()
+stability.time = c()
+absolute.range.min.value = c()
+absolute.range.max.value = c()
+relative.range.min.value = c()
+relative.range.max.value = c()
+proportion.significant = c()
+proportion.wrong = c()
+num.phases = c()
+
+sink(paste("cary_forest_adult_tick_density_data_results",Sys.Date(),".txt", sep = ""))
+for (i in grids) {
+  tryCatch({
+    #location: i
+    grid <- tick_data[tick_data$Grid == i,]
+    #get only year and ticks found column
+    tick_adults <- grid[,c("Year", "DOA")]
+    #omit nas
+    tick_adults <- na.omit(tick_adults)
+    #data now cleaned
+    
+    #if number of years in location exceeds 9 run functions
+    if(nrow(tick_adults) >= 10) {
+      #i returns grid name
+      print(i)
+      grids.with.10.years.data <- c(grids.with.10.years.data, paste("Grid", i))
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_adults$Year[1])
+      end.year <- c(end.year, tick_adults$Year[nrow(tick_adults)])
+      
+      #iterates through our targetted windows and returns summary statistics
+      print("Multiple Breakups")
+      print(multiple_breakups(tick_adults))
+      
+      #returns how many years it takes to reach stability
+      print("Stability Time")
+      st <- stability_time(tick_adults)
+      print(st)
+      stability.time <- c(stability.time, st)
+      
+      #abs_range returns the absolute range of significant findings
+      print("Absolute Range")
+      ar <- abs_range(tick_adults, only_significant = FALSE, significance = 0.05)
+      print(ar)
+      absolute.range.min.value <- c(absolute.range.min.value, ar[1])
+      absolute.range.max.value <- c(absolute.range.max.value, ar[2])
+      
+      #relative_range returns the absolute over and under estimate compared to the slope of the longest series
+      print("Relative Range")
+      rr <- relative_range(tick_adults, only_significant = FALSE, significance = 0.05)
+      print(rr)
+      relative.range.min.value <- c(relative.range.min.value, rr[1])
+      relative.range.max.value <- c(relative.range.max.value, rr[2])
+      
+      #returns the proportion of total windows with statistically significant values
+      print("Proportion Significant")
+      ps <- proportion_significant(tick_adults, significance = 0.05)
+      print(ps)
+      proportion.significant <- c(proportion.significant, ps)
+      
+      #returns proportion of significant relationships that does not match the direction of the true slope
+      print("Proportion Significantly Wrong")
+      psw <- proportion_wrong(tick_adults, significance = 0.05)
+      print(psw)
+      proportion.wrong <- c(proportion.wrong, psw)
+      
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_adults)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
+      #print pyramid plot to png
+      png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Adult deer tick density in Grid ", i, ", Cary Forest ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
+      print(pyramid_plot(tick_adults, title=paste("Adult deer tick density in Grid ", i, ", Cary Forest", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
+      dev.off()
+      
+    }
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}
+
+county_adult_tick_data_results <- data.frame(grids.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
+write.csv(county_adult_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/cary_forest_adult_tick_data_density_results_",Sys.Date(),".csv",sep = ""))
+
+##########################################
+#now run the aggregated count in Cary Forest as a whole for adult deer tick density
+print("Cary Forest")
+
+#read in survey data from Cary Forest
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#location: Harvard forest
+location <- tick_data
+#look at deer ticks *found*
+#get only year and ticks found column
+tick_adults <- location[,c("Year", "DOA")]
+#omit nas
+tick_adults <- na.omit(tick_adults)
+#aggregate all counts per year in single row
+frame=data.frame(tick_adults)
+tick_adults <- aggregate(frame['DOA'], by=frame['Year'], sum)
+
+#Multiple breakups
+print("Multiple Breakups")
+print(multiple_breakups(tick_adults))
+#Stability
+print("Stability Time")
+print(stability_time(tick_adults))
+#Absolute range
+print("Absolute Range")
+print(abs_range(tick_adults, only_significant = FALSE, significance = 0.05))
+#successful
+print("Relative Range")
+print(relative_range(tick_adults, only_significant = FALSE, significance = 0.05))
+print("Proportion Significant")
+print(proportion_significant(tick_adults, significance = 0.05))
+print("Proportion Significantly Wrong")
+print(proportion_wrong(tick_adults, significance = 0.05))
+print("Number of phases")
+#add column for adundance next year to determine best model
+ticks_modeled <- addNt1(tick_adults)
+bf <- bestfit(ticks_modeled, "AIC")
+print(bf$Nfits)
+print(bf)
+
+png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Adult deer tick density in Cary Forest ", Sys.Date(),".png", sep = ''), width = 876, height = 604)
+pyramid_plot(tick_adults, title="Adult deer tick density in Cary Forest", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
+dev.off()
+
+sink()
+
+#-------------------------------------------------#
+#Tick Nymph density
+
+#read in tick nymph data
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#create vector of grids in NY state in the dataset
+grids <- unique(tick_data$Grid)
+grids <- na.omit(grids)
+grids <- as.character(grids)
+
+#set up vectors to collect results of stability time, absolute range, relative range 
+#run on nymph deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
+grids.with.10.years.data = c()
+stability.time = c()
+absolute.range.min.value = c()
+absolute.range.max.value = c()
+relative.range.min.value = c()
+relative.range.max.value = c()
+proportion.significant = c()
+proportion.wrong = c()
+num.phases = c()
+
+sink(paste("cary_forest_nymph_tick_density_data_results",Sys.Date(),".txt", sep = ""))
+for (i in grids) {
+  tryCatch({
+    #location: i
+    grid <- tick_data[tick_data$Grid == i,]
+    #get only year and ticks found column
+    tick_nymphs <- grid[,c("Year", "DON")]
+    #omit nas
+    tick_nymphs <- na.omit(tick_nymphs)
+    #data now cleaned
+    
+    #if number of years in location exceeds 9 run functions
+    if(nrow(tick_nymphs) >= 10) {
+      #i returns grid name
+      print(i)
+      grids.with.10.years.data <- c(grids.with.10.years.data, paste("Grid", i))
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_nymphs$Year[1])
+      end.year <- c(end.year, tick_nymphs$Year[nrow(tick_nymphs)])
+      
+      #iterates through our targetted windows and returns summary statistics
+      print("Multiple Breakups")
+      print(multiple_breakups(tick_nymphs))
+      
+      #returns how many years it takes to reach stability
+      print("Stability Time")
+      st <- stability_time(tick_nymphs)
+      print(st)
+      stability.time <- c(stability.time, st)
+      
+      #abs_range returns the absolute range of significant findings
+      print("Absolute Range")
+      ar <- abs_range(tick_nymphs, only_significant = FALSE, significance = 0.05)
+      print(ar)
+      absolute.range.min.value <- c(absolute.range.min.value, ar[1])
+      absolute.range.max.value <- c(absolute.range.max.value, ar[2])
+      
+      #relative_range returns the absolute over and under estimate compared to the slope of the longest series
+      print("Relative Range")
+      rr <- relative_range(tick_nymphs, only_significant = FALSE, significance = 0.05)
+      print(rr)
+      relative.range.min.value <- c(relative.range.min.value, rr[1])
+      relative.range.max.value <- c(relative.range.max.value, rr[2])
+      
+      #returns the proportion of total windows with statistically significant values
+      print("Proportion Significant")
+      ps <- proportion_significant(tick_nymphs, significance = 0.05)
+      print(ps)
+      proportion.significant <- c(proportion.significant, ps)
+      
+      #returns proportion of significant relationships that does not match the direction of the true slope
+      print("Proportion Significantly Wrong")
+      psw <- proportion_wrong(tick_nymphs, significance = 0.05)
+      print(psw)
+      proportion.wrong <- c(proportion.wrong, psw)
+      
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_nymphs)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
+      #print pyramid plot to png
+      png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/nymph deer tick density in Grid ", i, ", Cary Forest ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
+      print(pyramid_plot(tick_nymphs, title=paste("Nymph deer tick density in Grid ", i, ", Cary Forest", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
+      dev.off()
+      
+    }
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}
+
+county_nymph_tick_data_results <- data.frame(grids.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
+write.csv(county_nymph_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/cary_forest_nymph_tick_data_density_results_",Sys.Date(),".csv",sep = ""))
+
+##########################################
+#now run the aggregated count in Cary Forest as a whole for nymph deer tick density
+print("Cary Forest")
+
+#read in survey data from Cary Forest
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#location: Harvard forest
+location <- tick_data
+#look at deer ticks *found*
+#get only year and ticks found column
+tick_nymphs <- location[,c("Year", "DON")]
+#omit nas
+tick_nymphs <- na.omit(tick_nymphs)
+#aggregate all counts per year in single row
+frame=data.frame(tick_nymphs)
+tick_nymphs <- aggregate(frame['DON'], by=frame['Year'], sum)
+
+#Multiple breakups
+print("Multiple Breakups")
+print(multiple_breakups(tick_nymphs))
+#Stability
+print("Stability Time")
+print(stability_time(tick_nymphs))
+#Absolute range
+print("Absolute Range")
+print(abs_range(tick_nymphs, only_significant = FALSE, significance = 0.05))
+#successful
+print("Relative Range")
+print(relative_range(tick_nymphs, only_significant = FALSE, significance = 0.05))
+print("Proportion Significant")
+print(proportion_significant(tick_nymphs, significance = 0.05))
+print("Proportion Significantly Wrong")
+print(proportion_wrong(tick_nymphs, significance = 0.05))
+print("Number of phases")
+#add column for adundance next year to determine best model
+ticks_modeled <- addNt1(tick_nymphs)
+bf <- bestfit(ticks_modeled, "AIC")
+print(bf$Nfits)
+print(bf)
+
+png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/nymph deer tick density in Cary Forest ", Sys.Date(),".png", sep = ''), width = 876, height = 604)
+pyramid_plot(tick_nymphs, title="Nymph deer tick density in Cary Forest", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
+dev.off()
+
+sink()
+
+
+#-------------------------------------------------#
+#Tick larvae density
+
+#read in tick larvae data
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#create vector of grids in NY state in the dataset
+grids <- unique(tick_data$Grid)
+grids <- na.omit(grids)
+grids <- as.character(grids)
+
+#set up vectors to collect results of stability time, absolute range, relative range 
+#run on larvae deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
+grids.with.10.years.data = c()
+stability.time = c()
+absolute.range.min.value = c()
+absolute.range.max.value = c()
+relative.range.min.value = c()
+relative.range.max.value = c()
+proportion.significant = c()
+proportion.wrong = c()
+num.phases = c()
+
+sink(paste("cary_forest_larvae_tick_density_data_results",Sys.Date(),".txt", sep = ""))
+for (i in grids) {
+  tryCatch({
+    #location: i
+    grid <- tick_data[tick_data$Grid == i,]
+    #get only year and ticks found column
+    tick_larvaes <- grid[,c("Year", "DOL")]
+    #omit nas
+    tick_larvaes <- na.omit(tick_larvaes)
+    #data now cleaned
+    
+    #if number of years in location exceeds 9 run functions
+    if(nrow(tick_larvaes) >= 10) {
+      #i returns grid name
+      print(i)
+      grids.with.10.years.data <- c(grids.with.10.years.data, paste("Grid", i))
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, tick_larvaes$Year[1])
+      end.year <- c(end.year, tick_larvaes$Year[nrow(tick_larvaes)])
+      
+      #iterates through our targetted windows and returns summary statistics
+      print("Multiple Breakups")
+      print(multiple_breakups(tick_larvaes))
+      
+      #returns how many years it takes to reach stability
+      print("Stability Time")
+      st <- stability_time(tick_larvaes)
+      print(st)
+      stability.time <- c(stability.time, st)
+      
+      #abs_range returns the absolute range of significant findings
+      print("Absolute Range")
+      ar <- abs_range(tick_larvaes, only_significant = FALSE, significance = 0.05)
+      print(ar)
+      absolute.range.min.value <- c(absolute.range.min.value, ar[1])
+      absolute.range.max.value <- c(absolute.range.max.value, ar[2])
+      
+      #relative_range returns the absolute over and under estimate compared to the slope of the longest series
+      print("Relative Range")
+      rr <- relative_range(tick_larvaes, only_significant = FALSE, significance = 0.05)
+      print(rr)
+      relative.range.min.value <- c(relative.range.min.value, rr[1])
+      relative.range.max.value <- c(relative.range.max.value, rr[2])
+      
+      #returns the proportion of total windows with statistically significant values
+      print("Proportion Significant")
+      ps <- proportion_significant(tick_larvaes, significance = 0.05)
+      print(ps)
+      proportion.significant <- c(proportion.significant, ps)
+      
+      #returns proportion of significant relationships that does not match the direction of the true slope
+      print("Proportion Significantly Wrong")
+      psw <- proportion_wrong(tick_larvaes, significance = 0.05)
+      print(psw)
+      proportion.wrong <- c(proportion.wrong, psw)
+      
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(tick_larvaes)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
+      #print pyramid plot to png
+      png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/larvae deer tick density in Grid ", i, ", Cary Forest ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
+      print(pyramid_plot(tick_larvaes, title=paste("Larvae deer tick density in Grid ", i, ", Cary Forest", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
+      dev.off()
+      
+    }
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}
+
+county_larvae_tick_data_results <- data.frame(grids.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
+write.csv(county_larvae_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/cary_forest_larvae_tick_data_density_results_",Sys.Date(),".csv",sep = ""))
+
+##########################################
+#now run the aggregated count in Cary Forest as a whole for larvae deer tick density
+print("Cary Forest")
+
+#read in survey data from Cary Forest
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#location: Harvard forest
+location <- tick_data
+#look at deer ticks *found*
+#get only year and ticks found column
+tick_larvaes <- location[,c("Year", "DOL")]
+#omit nas
+tick_larvaes <- na.omit(tick_larvaes)
+#aggregate all counts per year in single row
+frame=data.frame(tick_larvaes)
+tick_larvaes <- aggregate(frame['DOL'], by=frame['Year'], sum)
+
+#Multiple breakups
+print("Multiple Breakups")
+print(multiple_breakups(tick_larvaes))
+#Stability
+print("Stability Time")
+print(stability_time(tick_larvaes))
+#Absolute range
+print("Absolute Range")
+print(abs_range(tick_larvaes, only_significant = FALSE, significance = 0.05))
+#successful
+print("Relative Range")
+print(relative_range(tick_larvaes, only_significant = FALSE, significance = 0.05))
+print("Proportion Significant")
+print(proportion_significant(tick_larvaes, significance = 0.05))
+print("Proportion Significantly Wrong")
+print(proportion_wrong(tick_larvaes, significance = 0.05))
+print("Number of phases")
+#add column for adundance next year to determine best model
+ticks_modeled <- addNt1(tick_larvaes)
+bf <- bestfit(ticks_modeled, "AIC")
+print(bf$Nfits)
+print(bf)
+
+png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/larvae deer tick density in Cary Forest ", Sys.Date(),".png", sep = ''), width = 876, height = 604)
+pyramid_plot(tick_larvaes, title="Larvae deer tick density in Cary Forest", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
+dev.off()
+
+sink()
+
+
+#-------------------------------------------------#
+##Weighted average nymphal infection prevalence
+#combining ticks tested using the two different
+#methods when necessary
+
+#read in tick larvae data
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#create vector of grids in NY state in the dataset
+grids <- unique(tick_data$Grid)
+grids <- na.omit(grids)
+grids <- as.character(grids)
+
+#set up vectors to collect results of stability time, absolute range, relative range 
+#run on larvae deer tick data for each county with at least 10 years data
+start.year = c()
+end.year = c()
+grids.with.10.years.data = c()
+stability.time = c()
+absolute.range.min.value = c()
+absolute.range.max.value = c()
+relative.range.min.value = c()
+relative.range.max.value = c()
+proportion.significant = c()
+proportion.wrong = c()
+num.phases = c()
+
+sink(paste("cary_forest_nymphal_pathogen presence_data_results",Sys.Date(),".txt", sep = ""))
+for (i in grids) {
+  tryCatch({
+    #location: i
+    grid <- tick_data[tick_data$Grid == i,]
+    #get only year and ticks found column
+    ticks_infected <- grid[,c("Year", "DOL")]
+    #omit nas
+    ticks_infected <- na.omit(ticks_infected)
+    #data now cleaned
+    
+    #if number of years in location exceeds 9 run functions
+    if(nrow(ticks_infected) >= 10) {
+      #i returns grid name
+      print(i)
+      grids.with.10.years.data <- c(grids.with.10.years.data, paste("Grid", i))
+      
+      #add start and end year to vector to be included in csv
+      start.year <- c(start.year, ticks_infected$Year[1])
+      end.year <- c(end.year, ticks_infected$Year[nrow(ticks_infected)])
+      
+      #iterates through our targetted windows and returns summary statistics
+      print("Multiple Breakups")
+      print(multiple_breakups(ticks_infected))
+      
+      #returns how many years it takes to reach stability
+      print("Stability Time")
+      st <- stability_time(ticks_infected)
+      print(st)
+      stability.time <- c(stability.time, st)
+      
+      #abs_range returns the absolute range of significant findings
+      print("Absolute Range")
+      ar <- abs_range(ticks_infected, only_significant = FALSE, significance = 0.05)
+      print(ar)
+      absolute.range.min.value <- c(absolute.range.min.value, ar[1])
+      absolute.range.max.value <- c(absolute.range.max.value, ar[2])
+      
+      #relative_range returns the absolute over and under estimate compared to the slope of the longest series
+      print("Relative Range")
+      rr <- relative_range(ticks_infected, only_significant = FALSE, significance = 0.05)
+      print(rr)
+      relative.range.min.value <- c(relative.range.min.value, rr[1])
+      relative.range.max.value <- c(relative.range.max.value, rr[2])
+      
+      #returns the proportion of total windows with statistically significant values
+      print("Proportion Significant")
+      ps <- proportion_significant(ticks_infected, significance = 0.05)
+      print(ps)
+      proportion.significant <- c(proportion.significant, ps)
+      
+      #returns proportion of significant relationships that does not match the direction of the true slope
+      print("Proportion Significantly Wrong")
+      psw <- proportion_wrong(ticks_infected, significance = 0.05)
+      print(psw)
+      proportion.wrong <- c(proportion.wrong, psw)
+      
+      print("Number of phases")
+      #add column for adundance next year to determine best model
+      ticks_modeled <- addNt1(ticks_infected)
+      bf <- bestfit(ticks_modeled, "AIC")
+      print(bf$Nfits)
+      print(bf)
+      num.phases <- c(num.phases, bf$Nfits)
+      
+      #print pyramid plot to png
+      png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Fraction of nymphal deer ticks infected with B. burgdorferi in Grid ", i, ", Cary Forest ",Sys.Date(),".png", sep = ''), width = 876, height = 604)
+      print(pyramid_plot(ticks_infected, title=paste("Fraction of nymphal deer ticks infected with B. burgdorferi in Grid ", i, ", Cary Forest", sep = ''), plot_insig = TRUE, significance=0.05, rsq_points =TRUE, caption_plot = paste("Stability Time:", st)))
+      dev.off()
+      
+    }
+    
+  }, error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+}
+
+county_larvae_tick_data_results <- data.frame(grids.with.10.years.data, start.year, end.year, stability.time, absolute.range.min.value, absolute.range.max.value, relative.range.min.value, relative.range.max.value, proportion.significant, proportion.wrong, num.phases)
+write.csv(county_larvae_tick_data_results, file = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/cary_forest_nymphal_pathogen_presence_results_",Sys.Date(),".csv",sep = ""))
+
+##########################################
+#now run the aggregated count in Cary Forest as a whole for average nymphal infection prevalence
+print("Cary Forest")
+
+#read in survey data from Cary Forest
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/Lyme_Study_Dataset.csv", head = T)
+
+#location: Harvard forest
+location <- tick_data
+#look at deer ticks *found*
+#get only year and ticks found column
+ticks_infected <- location[,c("Year", "DOL")]
+#omit nas
+ticks_infected <- na.omit(ticks_infected)
+#aggregate all counts per year in single row
+frame=data.frame(ticks_infected)
+ticks_infected <- aggregate(frame['DOL'], by=frame['Year'], sum)
+
+#Multiple breakups
+print("Multiple Breakups")
+print(multiple_breakups(ticks_infected))
+#Stability
+print("Stability Time")
+print(stability_time(ticks_infected))
+#Absolute range
+print("Absolute Range")
+print(abs_range(ticks_infected, only_significant = FALSE, significance = 0.05))
+#successful
+print("Relative Range")
+print(relative_range(ticks_infected, only_significant = FALSE, significance = 0.05))
+print("Proportion Significant")
+print(proportion_significant(ticks_infected, significance = 0.05))
+print("Proportion Significantly Wrong")
+print(proportion_wrong(ticks_infected, significance = 0.05))
+print("Number of phases")
+#add column for adundance next year to determine best model
+ticks_modeled <- addNt1(ticks_infected)
+bf <- bestfit(ticks_modeled, "AIC")
+print(bf$Nfits)
+print(bf)
+
+png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Fraction of nymphal deer ticks infected with B burgdorferi in Cary Forest ", Sys.Date(),".png", sep = ''), width = 876, height = 604)
+pyramid_plot(ticks_infected, title="Fraction of nymphal deer ticks infected with B. burgdorferi in Cary Forest", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
+dev.off()
+
+sink()
+
+
+
+

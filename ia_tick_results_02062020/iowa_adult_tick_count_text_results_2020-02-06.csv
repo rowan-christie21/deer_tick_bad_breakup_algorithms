@@ -1,0 +1,158 @@
+,x,
+1,Iowa,
+2,start year for  Iowa ,2000
+3,end year for  Iowa ,2013
+4,stability time for  Iowa ,7
+5,absolute range min for  Iowa ,-0.909545341
+6,absolute range max for  Iowa ,1.136931676
+7,relative range min for  Iowa ,-0.821589308
+8,relative range max for  Iowa ,1.224887709
+9,proportion significant for  Iowa ,0.038461538
+10,proportion significantly wrong for  Iowa ,0.038461538
+11,number of phases for  Iowa ,2
+12,Winneshiek,
+13,start year for  Winneshiek ,2000
+14,end year for  Winneshiek ,2012
+15,stability time for  Winneshiek , NA
+16,absolute range min for  Winneshiek , NA
+17,absolute range max for  Winneshiek , NA
+18,relative range min for  Winneshiek , NA
+19,relative range max for  Winneshiek , NA
+20,proportion significant for  Winneshiek , NA
+21,proportion significantly wrong for  Winneshiek , NA
+22,number of phases for  Winneshiek ,2
+23,Muscatine,
+24,start year for  Muscatine ,1990
+25,end year for  Muscatine ,2013
+26,stability time for  Muscatine , NA
+27,absolute range min for  Muscatine , NA
+28,absolute range max for  Muscatine , NA
+29,relative range min for  Muscatine , NA
+30,relative range max for  Muscatine , NA
+31,proportion significant for  Muscatine , NA
+32,proportion significantly wrong for  Muscatine , NA
+33,number of phases for  Muscatine ,3
+34,Linn,
+35,start year for  Linn ,1990
+36,end year for  Linn ,2013
+37,stability time for  Linn , NA
+38,absolute range min for  Linn , NA
+39,absolute range max for  Linn , NA
+40,relative range min for  Linn , NA
+41,relative range max for  Linn , NA
+42,proportion significant for  Linn , NA
+43,proportion significantly wrong for  Linn , NA
+44,number of phases for  Linn ,2
+45,OOS - Illinois,
+46,start year for  OOS - Illinois ,1990
+47,end year for  OOS - Illinois ,2009
+48,stability time for  OOS - Illinois , NA
+49,absolute range min for  OOS - Illinois , NA
+50,absolute range max for  OOS - Illinois , NA
+51,relative range min for  OOS - Illinois , NA
+52,relative range max for  OOS - Illinois , NA
+53,proportion significant for  OOS - Illinois , NA
+54,proportion significantly wrong for  OOS - Illinois , NA
+55,number of phases for  OOS - Illinois ,1
+56,Johnson,
+57,start year for  Johnson ,1992
+58,end year for  Johnson ,2013
+59,stability time for  Johnson , NA
+60,absolute range min for  Johnson , NA
+61,absolute range max for  Johnson , NA
+62,relative range min for  Johnson , NA
+63,relative range max for  Johnson , NA
+64,proportion significant for  Johnson , NA
+65,proportion significantly wrong for  Johnson , NA
+66,number of phases for  Johnson ,2
+67,Jackson,
+68,start year for  Jackson ,1990
+69,end year for  Jackson ,2013
+70,stability time for  Jackson , NA
+71,absolute range min for  Jackson , NA
+72,absolute range max for  Jackson , NA
+73,relative range min for  Jackson , NA
+74,relative range max for  Jackson , NA
+75,proportion significant for  Jackson , NA
+76,proportion significantly wrong for  Jackson , NA
+77,number of phases for  Jackson ,2
+78,Allamakee,
+79,start year for  Allamakee ,1990
+80,end year for  Allamakee ,2013
+81,stability time for  Allamakee , NA
+82,absolute range min for  Allamakee , NA
+83,absolute range max for  Allamakee , NA
+84,relative range min for  Allamakee , NA
+85,relative range max for  Allamakee , NA
+86,proportion significant for  Allamakee , NA
+87,proportion significantly wrong for  Allamakee , NA
+88,number of phases for  Allamakee ,3
+89,number of phases for  Allamakee ,3
+90,number of phases for  Allamakee ,3
+91,Delaware,
+92,start year for  Delaware ,2001
+93,end year for  Delaware ,2012
+94,stability time for  Delaware ,4
+95,absolute range min for  Delaware ,-0.677630927
+96,absolute range max for  Delaware ,0.677630927
+97,relative range min for  Delaware ,-0.799946979
+98,relative range max for  Delaware ,0.555314875
+99,proportion significant for  Delaware ,0
+100,proportion significantly wrong for  Delaware ,0
+101,number of phases for  Delaware ,2
+102,number of phases for  Delaware ,2
+103,OOS - Wisconsin,
+104,start year for  OOS - Wisconsin ,1900
+105,end year for  OOS - Wisconsin ,2010
+106,stability time for  OOS - Wisconsin , NA
+107,absolute range min for  OOS - Wisconsin , NA
+108,absolute range max for  OOS - Wisconsin , NA
+109,relative range min for  OOS - Wisconsin , NA
+110,relative range max for  OOS - Wisconsin , NA
+111,proportion significant for  OOS - Wisconsin , NA
+112,proportion significantly wrong for  OOS - Wisconsin , NA
+113,number of phases for  OOS - Wisconsin ,1
+114,Dubuque,
+115,start year for  Dubuque ,1990
+116,end year for  Dubuque ,2013
+117,stability time for  Dubuque , NA
+118,absolute range min for  Dubuque , NA
+119,absolute range max for  Dubuque , NA
+120,relative range min for  Dubuque , NA
+121,relative range max for  Dubuque , NA
+122,proportion significant for  Dubuque , NA
+123,proportion significantly wrong for  Dubuque , NA
+124,number of phases for  Dubuque ,2
+125,Fayette,
+126,start year for  Fayette ,1997
+127,end year for  Fayette ,2013
+128,stability time for  Fayette , NA
+129,absolute range min for  Fayette , NA
+130,absolute range max for  Fayette , NA
+131,relative range min for  Fayette , NA
+132,relative range max for  Fayette , NA
+133,proportion significant for  Fayette , NA
+134,proportion significantly wrong for  Fayette , NA
+135,number of phases for  Fayette ,1
+136,Clayton,
+137,start year for  Clayton ,1997
+138,end year for  Clayton ,2012
+139,stability time for  Clayton , NA
+140,absolute range min for  Clayton , NA
+141,absolute range max for  Clayton , NA
+142,relative range min for  Clayton , NA
+143,relative range max for  Clayton , NA
+144,proportion significant for  Clayton , NA
+145,proportion significantly wrong for  Clayton , NA
+146,number of phases for  Clayton ,2
+147,Polk,
+148,start year for  Polk ,1993
+149,end year for  Polk ,2012
+150,stability time for  Polk , NA
+151,absolute range min for  Polk , NA
+152,absolute range max for  Polk , NA
+153,relative range min for  Polk , NA
+154,relative range max for  Polk , NA
+155,proportion significant for  Polk , NA
+156,proportion significantly wrong for  Polk , NA
+157,number of phases for  Polk ,1

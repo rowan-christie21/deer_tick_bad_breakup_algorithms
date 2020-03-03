@@ -1,6 +1,17 @@
+#--------------------------------------------------------------------------#
+
+#call needed libaries
+library("ggplot2")
+
+#call to bad breakup algorithm developed by Dr. Christie Bahlai of Kent State
+source("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/bad_breakup_2/R_model/bad_breakup_script.R")
+
+#call to regime shift detector developed by Dr. Christie Bahlai of Kent State and Dr. Elise Zipkin
+source("D:/Ixodes_scapularis_research_2019/regime_shift_tick_algorithms/tick_regime_09192019/monarch_regime-master_07162019/regime_shift_detector.R")
+
 #-----------------------------------------------------------------------------------------------#
 sink(paste("harvard_forest_deer_tick_bad_breakup_results",Sys.Date(),".txt", sep = ""))
-#Sept 17 2019
+#Oct 15 2019
 # Cleaning up and modeling ticka found on people data from an oppurtunistic study in Harvard forest from here:
 # https://portal.lternet.edu/nis/mapbrowse?packageid=knb-lter-hfr.299.2
 # then running bad breakup, absolute range, relative range, stabilitiy time on it
@@ -67,7 +78,7 @@ for (i in locations) {
 print("Harvard Forest/n")
 
 #read in survey data from Harvard forest
-tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/harvard_forest/harvard_forest/hf299-01-survey.csv", head = T)
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/harvard_forest/hf299-01-survey.csv", head = T)
 
 #location: Harvard forest
 tick_loc <- tick_data
@@ -96,16 +107,22 @@ print("Proportion Significant")
 print(proportion_significant(ticks_found, significance = 0.05))
 print("Proportion Significantly Wrong")
 print(proportion_wrong(ticks_found, significance = 0.05))
+#add column for adundance next year to determine best model
+ticks_modeled <- addNt1(ticks_found)
+bf <- bestfit(ticks_modeled, "AIC")
+print(bf$Nfits)
+print(bf)
 
 png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Deer ticks found in Harvard Forest ", Sys.Date(),".png", sep = ''), width = 876, height = 604)
 pyramid_plot(ticks_found, title="Deer ticks found in Harvard Forest", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
 dev.off()
 
 #-----------------------------------------------------------------------------------------------#
-#Oct 1 2019
+#Oct 15 2019
 # Cleaning up and modeling tick bite data from an oppurtunistic study in Harvard forest from here:
 # https://portal.lternet.edu/nis/mapbrowse?packageid=knb-lter-hfr.299.2
-# then running bad breakup, absolute range, relative range, stabilitiy time on it
+# then running bad breakup, absolute range, relative range, stabilitiy time, proportion significant,
+# proportion significantly wrong functions on it
 
 print("Deer tick bites on people in Harvard forest")
 
@@ -113,7 +130,7 @@ print("Deer tick bites on people in Harvard forest")
 #now run bad breakup, stabiliity time, relative range, absolute range for all locations 
 
 #read in survey data from Harvard forest
-tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/harvard_forest/harvard_forest/hf299-01-survey.csv", head = T)
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/harvard_forest/hf299-01-survey.csv", head = T)
 
 #create vector of locations in Harvard forest sampled
 locations <- unique(tick_data$location.name)
@@ -167,7 +184,7 @@ for (i in locations) {
 print("Harvard Forest/n")
 
 #read in survey data from Harvard forest
-tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/harvard_forest/harvard_forest/hf299-01-survey.csv", head = T)
+tick_data <- read.csv("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/data/harvard_forest/hf299-01-survey.csv", head = T)
 
 #location: Harvard forest
 tick_loc <- tick_data
@@ -188,7 +205,7 @@ print("Stability Time")
 print(stability_time(tick_bites))
 #Absolute range
 print("Absolute Range")
-print(abs_range(tick_bites, only_significant = FALSE, significance = 0.5))
+print(abs_range(tick_bites, only_significant = FALSE, significance = 0.05))
 #successful
 print("Relative Range")
 print(relative_range(tick_bites, only_significant = FALSE, significance = 0.05))
@@ -196,6 +213,11 @@ print("Proportion Significant")
 print(proportion_significant(ticks_found, significance = 0.05))
 print("Proportion Significantly Wrong")
 print(proportion_wrong(ticks_found, significance = 0.05))
+#add column for adundance next year to determine best model
+ticks_modeled <- addNt1(ticks_found)
+bf <- bestfit(ticks_modeled, "AIC")
+print(bf$Nfits)
+print(bf)
 
 png(filename = paste("D:/Ixodes_scapularis_research_2019/bad_breakup_tick_algorithms/Deer tick bites in Harvard Forest ", Sys.Date(),".png", sep = ''), width = 876, height = 604)
 pyramid_plot(tick_bites, title="Deer tick bites in Harvard Forest", plot_insig = TRUE, significance=0.05, rsq_points =TRUE)
